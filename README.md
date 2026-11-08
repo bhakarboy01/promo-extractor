@@ -79,10 +79,9 @@ PromoExtractor/
 │   ├── ...
 │   └── episode-050.txt
 │
-├── docs/                            # Project documentation & presentation assets
-│   ├── prompt_templates.md          # Complete catalog of all prompts with headings
-│   ├── presentation_tour_script.txt # 2.5-minute presentation script
-│   └── architecture_flowchart.mmd   # Mermaid architecture diagram script
+├── docs/                            # Project documentation & prompt engineering specs
+│   ├── prompt_templates.md          # Complete catalog of all prompts with headings & schemas
+│   └── solution_architecture_document.tex # Official engineering solution LaTeX specification
 │
 └── outputs/                         # Primary project deliverables
     ├── extracted_promos.json        # All 15 candidate promos under 60 seconds
@@ -90,11 +89,8 @@ PromoExtractor/
     ├── pipeline_run.log             # Execution audit log tracking key rotation & latency
     │
     └── extras/                      # Supplemental deliverables & full audits
-        ├── series_screenplay_corpus.xml   # Unified XML corpus (50 episodes, 533k chars)
-        ├── llm_chats.json                 # Single master file containing all 17 LLM chats
-        ├── prompt_templates.md            # Master prompt templates catalog
-        ├── presentation_tour_script.txt   # Spoken walkthrough script with UI cues
-        └── architecture_flowchart.mmd     # Mermaid workflow flowchart
+        ├── series_screenplay_corpus.xml   # Unified XML corpus (50 episodes, 549k chars)
+        └── llm_chats.json                 # Single master file containing all 17 LLM chats
 ```
 
 ---
@@ -103,8 +99,8 @@ PromoExtractor/
 
 ### 1. Clone & Set Up Virtual Environment
 ```bash
-git clone https://github.com/your-username/PromoExtractor.git
-cd PromoExtractor
+git clone https://github.com/bhakarboy01/promo-extractor.git
+cd promo-extractor
 
 python -m venv venv
 # Windows:
@@ -162,11 +158,8 @@ The application is deployed live on **Streamlit Community Cloud**:
 | **All 15 Ranked Promos** | [`outputs/ranked_promos.json`](outputs/ranked_promos.json) | Complete ranking (1–15) with scores, titles, pairing synergy, and relevance tiers. |
 | **Candidate Extracted Promos** | [`outputs/extracted_promos.json`](outputs/extracted_promos.json) | All 15 candidate promos clamped strictly between 20s and 60s. |
 | **Unified XML Corpus** | [`outputs/extras/series_screenplay_corpus.xml`](outputs/extras/series_screenplay_corpus.xml) | All 50 episodes compiled into single XML document with `<episode id="X">` tags. |
-| **Unified LLM Chat History** | [`docs/llm_chats.json`](docs/llm_chats.json) | Single master JSON recording all 17 LLM requests (prompts) and raw/parsed responses. |
-| **Engineering Solution Document (MD)** | [`docs/solution_doc.md`](docs/solution_doc.md) | Comprehensive 2-page engineering review covering problem framing, failed approach post-mortem, Map-Reduce pipeline, limitations, and scaling. |
-| **Overleaf LaTeX Solution Document (TeX)** | [`docs/solution_doc.tex`](docs/solution_doc.tex) | Production-grade LaTeX script formatted and budgeted for clean 2-page PDF compilation. |
+| **Unified LLM Chat History** | [`outputs/extras/llm_chats.json`](outputs/extras/llm_chats.json) | Single master JSON recording all 17 LLM requests (prompts) and raw/parsed responses. |
 | **Prompt Templates Catalog** | [`docs/prompt_templates.md`](docs/prompt_templates.md) | Comprehensive prompt templates with headings, strategy rationale, and schemas. |
-| **Mermaid Architecture** | [`docs/architecture_flowchart.mmd`](docs/architecture_flowchart.mmd) | Raw Mermaid code defining the complete processing lifecycle (both High-Level and Detailed). |
 | **Pipeline Audit Log** | [`outputs/pipeline_run.log`](outputs/pipeline_run.log) | Real-time audit trail of key rotations, pacing pauses, and latencies. |
 
 ---

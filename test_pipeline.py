@@ -60,17 +60,12 @@ def test_deliverable_files():
     outputs_chats = find_file(["llm_chats.json"])
     outputs_xml = os.path.join(extras_dir, "series_screenplay_corpus.xml")
     outputs_prompts = find_file(["prompt_templates.md"])
-    outputs_tour = find_file(["presentation_tour_script.txt"])
-    outputs_mermaid = find_file(["architecture_flowchart.mmd"])
-    outputs_sol_md = find_file(["solution_doc.md"])
-    outputs_sol_tex = find_file(["solution_architecture_document.tex", "solution_doc.tex"])
 
     assert os.path.exists(outputs_extracted), f"{outputs_extracted} must exist"
     assert os.path.exists(outputs_ranked), f"{outputs_ranked} must exist"
     assert outputs_chats and os.path.exists(outputs_chats), "llm_chats.json must exist"
     assert os.path.exists(outputs_xml), f"{outputs_xml} must exist"
     assert outputs_prompts and os.path.exists(outputs_prompts), "prompt_templates.md must exist"
-    assert outputs_sol_tex and os.path.exists(outputs_sol_tex), "LaTeX solution doc must exist"
     
     with open(outputs_extracted, "r", encoding="utf-8") as f:
         ext = json.load(f)

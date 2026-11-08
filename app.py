@@ -41,10 +41,7 @@ def find_deliverable_path(filename_list: List[str]) -> str:
     return os.path.join(EXTRAS_DIR, filename_list[0])
 
 PROMPT_TEMPLATES_FILE = find_deliverable_path(["prompt_templates.md"])
-TOUR_SCRIPT_FILE = find_deliverable_path(["presentation_tour_script.txt"])
-MERMAID_FILE = find_deliverable_path(["architecture_flowchart.mmd"])
-SOLUTION_DOC_MD = find_deliverable_path(["solution_doc.md"])
-SOLUTION_DOC_TEX = find_deliverable_path(["solution_architecture_document.tex", "solution_doc.tex"])
+SOLUTION_PDF_FILE = find_deliverable_path(["solution_architecture_document.pdf", "solution_document.pdf", "Solution_Document.pdf"])
 
 st.set_page_config(
     page_title="AI Microdrama Promo Extractor",
@@ -648,7 +645,7 @@ with tab_deliverables:
         else:
             st.info("`outputs/extras/llm_chats.json` will be generated after running the pipeline.")
 
-        st.markdown("### 4. `outputs/extras/prompt_templates.md`")
+        st.markdown("### 4. `docs/prompt_templates.md`")
         st.caption("Comprehensive catalog of all system and user prompt templates with strategic rationale and JSON schemas.")
         if os.path.exists(PROMPT_TEMPLATES_FILE):
             with open(PROMPT_TEMPLATES_FILE, "r", encoding="utf-8") as f:
@@ -679,68 +676,20 @@ with tab_deliverables:
         else:
             st.info("`outputs/extras/series_screenplay_corpus.xml` will be saved during ingestion.")
 
-        st.markdown("### 6. `outputs/extras/presentation_tour_script.txt`")
-        st.caption("Concise 2.5-minute spoken presentation script with explicit cues for switching between the architecture diagram and web app.")
-        if os.path.exists(TOUR_SCRIPT_FILE):
-            with open(TOUR_SCRIPT_FILE, "r", encoding="utf-8") as f:
-                tour_script_text = f.read()
+        # Optional download for compiled PDF solution document
+        if SOLUTION_PDF_FILE and os.path.exists(SOLUTION_PDF_FILE):
+            st.markdown("### 6. Official Solution Document (PDF)")
+            st.caption("Comprehensive 2-page engineering solution and architecture review document.")
+            with open(SOLUTION_PDF_FILE, "rb") as f:
+                pdf_bytes = f.read()
             st.download_button(
-                label="📥 Download presentation_tour_script.txt",
-                data=tour_script_text,
-                file_name="presentation_tour_script.txt",
-                mime="text/plain",
+                label="📥 Download Solution Document (PDF)",
+                data=pdf_bytes,
+                file_name=os.path.basename(SOLUTION_PDF_FILE),
+                mime="application/pdf",
+                type="primary",
                 use_container_width=True
             )
-            with st.expander("🔍 Read 2.5-Minute Tour Script"):
-                st.text(tour_script_text)
-
-        st.markdown("### 7. `outputs/extras/architecture_flowchart.mmd`")
-        st.caption("Mermaid flowchart script depicting data ingestion, LLM call sequence, and Map-Reduce promo synthesis.")
-        if os.path.exists(MERMAID_FILE):
-            with open(MERMAID_FILE, "r", encoding="utf-8") as f:
-                mermaid_text = f.read()
-            st.download_button(
-                label="📥 Download architecture_flowchart.mmd",
-                data=mermaid_text,
-                file_name="architecture_flowchart.mmd",
-                mime="text/plain",
-                use_container_width=True
-            )
-
-    st.divider()
-    st.subheader("📑 Formal Engineering Solution Documents (`docs/` & `outputs/extras/`)")
-    col_sol1, col_sol2 = st.columns(2)
-    with col_sol1:
-        st.markdown("### 8. `outputs/extras/solution_doc.md`")
-        st.caption("2-page engineering solution document covering problem framing, failed approach post-mortem, Map-Reduce pipeline, limitations, and scaling.")
-        if os.path.exists(SOLUTION_DOC_MD):
-            with open(SOLUTION_DOC_MD, "r", encoding="utf-8") as f:
-                sol_md_text = f.read()
-            st.download_button(
-                label="📥 Download solution_doc.md",
-                data=sol_md_text,
-                file_name="solution_doc.md",
-                mime="text/markdown",
-                use_container_width=True
-            )
-            with st.expander("🔍 Read Solution Document (Markdown)"):
-                st.markdown(sol_md_text)
-
-    with col_sol2:
-        st.markdown("### 9. `outputs/extras/solution_doc.tex` (Overleaf Ready)")
-        st.caption("Publication-grade, Overleaf-ready LaTeX script strictly budgeted for a 2-page concise PDF submission.")
-        if os.path.exists(SOLUTION_DOC_TEX):
-            with open(SOLUTION_DOC_TEX, "r", encoding="utf-8") as f:
-                sol_tex_text = f.read()
-            st.download_button(
-                label="📥 Download solution_doc.tex",
-                data=sol_tex_text,
-                file_name="solution_doc.tex",
-                mime="text/x-tex",
-                use_container_width=True
-            )
-            with st.expander("🔍 View Overleaf LaTeX Source"):
-                st.code(sol_tex_text, language="latex")
 
 # TAB 4: XML SCREENPLAY CORPUS INSPECTOR
 with tab_xml:

@@ -20,6 +20,23 @@ EXTRAS_DIR = os.path.join(LOG_DIR, "extras")
 os.makedirs(EXTRAS_DIR, exist_ok=True)
 LLM_CHATS_DIR = EXTRAS_DIR
 LLM_CHATS_FILE = os.path.join(EXTRAS_DIR, "llm_chats.json")
+if not os.path.exists(LLM_CHATS_FILE):
+    alt_chats = os.path.join(os.path.dirname(__file__), "docs", "llm_chats.json")
+    if os.path.exists(alt_chats):
+        LLM_CHATS_FILE = alt_chats
+
+__all__ = [
+    "LOG_FILE",
+    "LLM_CHATS_FILE",
+    "LOG_DIR",
+    "EXTRAS_DIR",
+    "log_event",
+    "record_llm_interaction",
+    "resolve_api_keys",
+    "APIKeyPool",
+    "BaseLLMProvider",
+    "LiteLLMProvider",
+]
 
 logger = logging.getLogger("PromoExtractor")
 logger.setLevel(logging.INFO)

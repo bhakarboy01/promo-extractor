@@ -1,9 +1,23 @@
 import os
 import re
 import json
+import importlib
 import streamlit as st
 from typing import List, Dict, Any, Tuple
-from llm_provider import LiteLLMProvider, resolve_api_keys, LOG_FILE, LLM_CHATS_FILE
+
+# Hot-reload resilience for Streamlit Cloud
+import llm_provider
+if not hasattr(llm_provider, "LOG_FILE") or not hasattr(llm_provider, "LLM_CHATS_FILE"):
+    llm_provider = importlib.reload(llm_provider)
+
+from llm_provider import LiteLLMProvider, resolve_api_keys
+LOG_FILE = getattr(llm_provider, "LOG_FILE", os.path.join(os.path.dirname(__file__), "outputs", "pipeline_run.log"))
+LLM_CHATS_FILE = getattr(llm_provider, "LLM_CHATS_FILE", os.path.join(os.path.dirname(__file__), "outputs", "extras", "llm_chats.json"))
+
+import promo_engine
+if not hasattr(promo_engine, "PromoEngine"):
+    promo_engine = importlib.reload(promo_engine)
+
 from promo_engine import (
     PromoEngine,
     load_data_files,
@@ -16,11 +30,21 @@ from promo_engine import (
 )
 
 EXTRAS_DIR = os.path.join(os.path.dirname(__file__), "outputs", "extras")
-PROMPT_TEMPLATES_FILE = os.path.join(EXTRAS_DIR, "prompt_templates.md")
-TOUR_SCRIPT_FILE = os.path.join(EXTRAS_DIR, "presentation_tour_script.txt")
-MERMAID_FILE = os.path.join(EXTRAS_DIR, "architecture_flowchart.mmd")
-SOLUTION_DOC_MD = os.path.join(EXTRAS_DIR, "solution_doc.md")
-SOLUTION_DOC_TEX = os.path.join(EXTRAS_DIR, "solution_doc.tex")
+DOCS_DIR = os.path.join(os.path.dirname(__file__), "docs")
+
+def find_deliverable_path(filename_list: List[str]) -> str:
+    for fname in filename_list:
+        for folder in [DOCS_DIR, EXTRAS_DIR]:
+            candidate = os.path.join(folder, fname)
+            if os.path.exists(candidate):
+                return candidate
+    return os.path.join(EXTRAS_DIR, filename_list[0])
+
+PROMPT_TEMPLATES_FILE = find_deliverable_path(["prompt_templates.md"])
+TOUR_SCRIPT_FILE = find_deliverable_path(["presentation_tour_script.txt"])
+MERMAID_FILE = find_deliverable_path(["architecture_flowchart.mmd"])
+SOLUTION_DOC_MD = find_deliverable_path(["solution_doc.md"])
+SOLUTION_DOC_TEX = find_deliverable_path(["solution_architecture_document.tex", "solution_doc.tex"])
 
 st.set_page_config(
     page_title="AI Microdrama Promo Extractor",

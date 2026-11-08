@@ -1,0 +1,397 @@
+{
+  "ranking_summary": "The strategy centers on 'Emotional Whiplash'—pairing the most vulnerable moments of public humiliation with the most satisfying instances of cold-blooded retribution. By prioritizing visual spikes (explosions, hot pokers, fire) at the hook and intimate psychological resolve at the cliffhanger, we maximize the 'sunk cost' psychology required for micro-drama binge-watching.",
+  "top_promos": [
+    {
+      "rank": 1,
+      "promo_id": "P14",
+      "title": "The Price of Secrets",
+      "episodes_used": [
+        31,
+        32
+      ],
+      "hook": "The heavy iron dungeon door swings open to reveal Catherine holding a smoldering hot poker and a charred botanical book.",
+      "cliffhanger": "Extreme close-up of Juliana's wide, unblinking blue eye as the intense, fiery orange glow of the iron poker radiates inches from her cornea.",
+      "relevance": "Exceptional - High Narrative Cohesion & Peak Hook-Cliffhanger Synergy",
+      "pairing_analysis": "The visual consistency of the threat (the hot poker) bridges two episodes instantly, forcing the viewer to watch the next episode solely to see if the threat is executed.",
+      "timestamps": [
+        {
+          "start": "00:00.00",
+          "end": "00:09.50"
+        },
+        {
+          "start": "02:30.80",
+          "end": "02:34.38"
+        }
+      ],
+      "total_duration_seconds": 25,
+      "virality_score": 98,
+      "why_it_works": "Utilizes extreme visceral danger to trigger an innate fight-or-flight response, ensuring the user cannot swipe away without resolution."
+    },
+    {
+      "rank": 2,
+      "promo_id": "P15",
+      "title": "Shattered Vows",
+      "episodes_used": [
+        41,
+        42
+      ],
+      "hook": "An ear-splitting detonation shatters the cathedral entrance, blasting massive double doors and masonry into flying shrapnel.",
+      "cliffhanger": "Tight close-up on Alexander, his hand resting on the hilt of his sabre as his eyes burn with fierce, cold retribution against Rupert.",
+      "relevance": "Exceptional - High Narrative Cohesion & Peak Hook-Cliffhanger Synergy",
+      "pairing_analysis": "The explosive entrance creates immediate auditory interest, while the calm resolve of the hero acts as the emotional anchor, promising a satisfying power reversal.",
+      "timestamps": [
+        {
+          "start": "01:21.00",
+          "end": "01:24.00"
+        },
+        {
+          "start": "00:01.00",
+          "end": "00:10.50"
+        },
+        {
+          "start": "01:13.80",
+          "end": "01:17.50"
+        }
+      ],
+      "total_duration_seconds": 28,
+      "virality_score": 95,
+      "why_it_works": "Combines high-octane action with character-driven vengeance, the two strongest levers in micro-drama."
+    },
+    {
+      "rank": 3,
+      "promo_id": "P05",
+      "title": "The Silent Reckoning",
+      "episodes_used": [
+        7
+      ],
+      "hook": "Gerald and an aristocratic woman step out of an ornate black-and-gold carriage to mock Juliana pulling weeds in her simple dress.",
+      "cliffhanger": "The Scarred Bearded Man drops a heavy bundle of firewood and silently glares at Gerald, causing him to flee in sheer terror.",
+      "relevance": "High - Strong Emotional Payoff",
+      "pairing_analysis": "Classic underdog-to-alpha transition. The transition from public class-based humiliation to immediate, silent dominance is a perfect viral loop.",
+      "timestamps": [
+        {
+          "start": "00:04.80",
+          "end": "00:24.50"
+        },
+        {
+          "start": "01:15.50",
+          "end": "01:33.80"
+        }
+      ],
+      "total_duration_seconds": 38,
+      "virality_score": 92,
+      "why_it_works": "Taps into the 'instant justice' psychological feedback loop, highly addictive for short-form audiences."
+    },
+    {
+      "rank": 4,
+      "promo_id": "P02",
+      "title": "The Wedding Ruin",
+      "episodes_used": [
+        1,
+        4
+      ],
+      "hook": "Gerald stands at the altar holding the gloved hand of the Lady in Gold Gown, announcing to the shocked bride, 'Because he is marrying me.'",
+      "cliffhanger": "Juliana and the Mysterious Bearded Man walk hand-in-hand through towering cathedral doors into bright daylight, turning their backs on the ruined wedding as the screen fades out.",
+      "relevance": "High - Strong Emotional Payoff",
+      "pairing_analysis": "Pairs the ultimate betrayal with the ultimate power move (walking away), providing a complete micro-story arc.",
+      "timestamps": [
+        {
+          "start": "00:33.70",
+          "end": "00:41.50"
+        },
+        {
+          "start": "02:22.80",
+          "end": "02:31.40"
+        }
+      ],
+      "total_duration_seconds": 24,
+      "virality_score": 89,
+      "why_it_works": "Viewers love seeing characters reclaim agency after a devastating public blow."
+    },
+    {
+      "rank": 5,
+      "promo_id": "P08",
+      "title": "Blood-Soaked Vengeance",
+      "episodes_used": [
+        13,
+        14
+      ],
+      "hook": "Juliana drops to her knees before the impenetrable, menacing thicket of frozen blackthorn briars encrusted with frost.",
+      "cliffhanger": "Alexander's scarred knuckles slowly and tightly clench into an iron fist of brewing vengeance beside a bucket of blood-soaked wash water.",
+      "relevance": "Good - Solid Drama Hook",
+      "pairing_analysis": "The atmosphere of cold, frozen suffering transitions into the warmth of imminent blood-shed, keeping interest sustained.",
+      "timestamps": [
+        {
+          "start": "00:45.80",
+          "end": "00:50.00"
+        },
+        {
+          "start": "01:23.50",
+          "end": "01:27.63"
+        }
+      ],
+      "total_duration_seconds": 25,
+      "virality_score": 85,
+      "why_it_works": "The imagery of 'blood-soaked' items is a reliable indicator of rising stakes."
+    },
+    {
+      "rank": 6,
+      "promo_id": "P04",
+      "title": "The Disowned Bride",
+      "episodes_used": [
+        5
+      ],
+      "hook": "Lord Ashcroft publicly declares Juliana dead to the family, revoking her dowry and inheritance outside the cathedral steps.",
+      "cliffhanger": "Juliana and the Mysterious Bearded Man walk together down the wet cobblestone path into the misty rain as melancholic orchestral strings swell.",
+      "relevance": "Good - Solid Drama Hook",
+      "pairing_analysis": "Public disownment creates sympathy; the walk into the rain creates romantic mystery.",
+      "timestamps": [
+        {
+          "start": "00:04.20",
+          "end": "00:28.90"
+        },
+        {
+          "start": "01:45.50",
+          "end": "01:50.50"
+        }
+      ],
+      "total_duration_seconds": 30,
+      "virality_score": 82,
+      "why_it_works": "The 'fallen noble' trope is a highly effective hook for female-skewing drama demographics."
+    },
+    {
+      "rank": 7,
+      "promo_id": "P10",
+      "title": "Vow in the Flames",
+      "episodes_used": [
+        18
+      ],
+      "hook": "Flames crackle beneath the closed bedroom door as thick smoke billows through the crevices in the dead of night, jolting Juliana awake.",
+      "cliffhanger": "Alexander stares into the burning inferno with unshakeable resolve, the swelling score echoing a vow of vengeance into the final cut to black.",
+      "relevance": "Good - Solid Drama Hook",
+      "pairing_analysis": "The transition from life-threatening danger to stoic determination keeps the viewer anchored.",
+      "timestamps": [
+        {
+          "start": "00:00.00",
+          "end": "00:09.50"
+        },
+        {
+          "start": "02:51.00",
+          "end": "03:12.00"
+        }
+      ],
+      "total_duration_seconds": 30,
+      "virality_score": 80,
+      "why_it_works": "Fire imagery is an excellent visual 'thumb-stopper' for social media feed algorithms."
+    },
+    {
+      "rank": 8,
+      "promo_id": "P07",
+      "title": "The Planted Evidence",
+      "episodes_used": [
+        11,
+        12
+      ],
+      "hook": "The Constable slides his hand deep inside Alexander's trench coat lining and withdraws a gleaming gold pocket watch.",
+      "cliffhanger": "Juliana locks eyes with Clarissa without flinching and demands to know where the frozen blackthorn garden is located to save Alexander.",
+      "relevance": "Good - Solid Drama Hook",
+      "pairing_analysis": "The hook establishes an accusation; the cliffhanger establishes a mission.",
+      "timestamps": [
+        {
+          "start": "01:31.00",
+          "end": "01:39.20"
+        },
+        {
+          "start": "01:14.00",
+          "end": "01:27.21"
+        }
+      ],
+      "total_duration_seconds": 21,
+      "virality_score": 78,
+      "why_it_works": "Procedural mystery keeps viewers curious about the truth behind the crime."
+    },
+    {
+      "rank": 9,
+      "promo_id": "P09",
+      "title": "The Hitman's Confession",
+      "episodes_used": [
+        15,
+        16
+      ],
+      "hook": "Three thugs invade Juliana's garden and smash a planter box, setting the stage for conflict.",
+      "cliffhanger": "Alexander violently interrogates the lead thug, forcing him to confess that Gerald Harrington ordered the hit.",
+      "relevance": "Fair - Simple Cohesion",
+      "pairing_analysis": "The scale moves from petty vandalism to a major conspiracy revelation.",
+      "timestamps": [
+        {
+          "start": "00:00.00",
+          "end": "00:05.00"
+        },
+        {
+          "start": "00:40.80",
+          "end": "00:52.20"
+        }
+      ],
+      "total_duration_seconds": 20,
+      "virality_score": 75,
+      "why_it_works": "Direct cause-and-effect narrative is easy for casual viewers to digest."
+    },
+    {
+      "rank": 10,
+      "promo_id": "P06",
+      "title": "The Fevered Conspiracy",
+      "episodes_used": [
+        9
+      ],
+      "hook": "A frantic peasant mother bangs desperately on the woodland cottage door, screaming that her boy is burning with fever.",
+      "cliffhanger": "Extreme close-up macro shot of the Blond Nobleman's eye, the flickering fireplace flames dancing across his widening iris as dark dread paralyzes him.",
+      "relevance": "Fair - Simple Cohesion",
+      "pairing_analysis": "The shift from frantic panic to internal dread builds a strong psychological bridge.",
+      "timestamps": [
+        {
+          "start": "00:02.00",
+          "end": "00:13.50"
+        },
+        {
+          "start": "01:37.20",
+          "end": "01:42.20"
+        },
+        {
+          "start": "01:52.00",
+          "end": "01:55.50"
+        }
+      ],
+      "total_duration_seconds": 20,
+      "virality_score": 72,
+      "why_it_works": "Close-up macro shots are visually arresting on mobile devices."
+    },
+    {
+      "rank": 11,
+      "promo_id": "P11",
+      "title": "Poisoned Manor",
+      "episodes_used": [
+        21,
+        22
+      ],
+      "hook": "Prudence bursts into the barn, hysterical and weeping, revealing to Lady Juliana that her little brother Toby's chest is burning and he is suffocating.",
+      "cliffhanger": "Lady Juliana discovers the Dowager Duchess is being poisoned, culminating in an extreme close-up of the Duchess’s eyes as she gasps for air.",
+      "relevance": "Fair - Simple Cohesion",
+      "pairing_analysis": "Two scenes of respiratory distress create a unified theme of suffocation and urgency.",
+      "timestamps": [
+        {
+          "start": "00:03.50",
+          "end": "00:15.00"
+        },
+        {
+          "start": "02:03.50",
+          "end": "02:11.00"
+        }
+      ],
+      "total_duration_seconds": 20,
+      "virality_score": 70,
+      "why_it_works": "Urgency is a universal motivator for engagement."
+    },
+    {
+      "rank": 12,
+      "promo_id": "P12",
+      "title": "The Duchess's Gasp",
+      "episodes_used": [
+        23,
+        24
+      ],
+      "hook": "The Dowager Duchess gasps hoarsely for air, her throat straining as she weakly fights to breathe in her canopied bed.",
+      "cliffhanger": "Tight close-up of Juliana's soot-streaked face turning slowly toward the chamber exit, her jaw set firm as dramatic music builds to a powerful crescendo.",
+      "relevance": "Fair - Simple Cohesion",
+      "pairing_analysis": "The vulnerability of the victim acts as the fuel for the protagonist's upcoming transformation.",
+      "timestamps": [
+        {
+          "start": "00:36.00",
+          "end": "00:38.50"
+        },
+        {
+          "start": "01:25.20",
+          "end": "01:32.00"
+        }
+      ],
+      "total_duration_seconds": 20,
+      "virality_score": 68,
+      "why_it_works": "The 'soot-streaked' visual is a familiar archetype for a character who has been through hell."
+    },
+    {
+      "rank": 13,
+      "promo_id": "P03",
+      "title": "The Cathedral Ejection",
+      "episodes_used": [
+        3
+      ],
+      "hook": "Two royal guards in red uniforms forcefully grab Juliana by both shoulders and drag her backwards down the center aisle.",
+      "cliffhanger": "The Bearded Stranger sinks to one knee on the cathedral aisle, offering a polished silver ring up to Juliana as the congregation gasps.",
+      "relevance": "Fair - Simple Cohesion",
+      "pairing_analysis": "The rejection by guards is immediately countered by an offer of marriage, creating an emotional whiplash effect.",
+      "timestamps": [
+        {
+          "start": "01:00.00",
+          "end": "01:03.50"
+        },
+        {
+          "start": "02:12.70",
+          "end": "02:16.20"
+        }
+      ],
+      "total_duration_seconds": 20,
+      "virality_score": 65,
+      "why_it_works": "Rapid-fire status shifts from 'outcast' to 'chosen' are very effective."
+    },
+    {
+      "rank": 14,
+      "promo_id": "P01",
+      "title": "The Hardened Defiance",
+      "episodes_used": [
+        1
+      ],
+      "hook": "Juliana steps into the cathedral wearing her mother's vintage gown, her face beaming with joyful anticipation.",
+      "cliffhanger": "A solemn low-pitched string drone swells as Juliana's tearful blue eyes harden from utter devastation into cold, resolute defiance, cutting to black.",
+      "relevance": "Fair - Simple Cohesion",
+      "pairing_analysis": "The contrast between the initial joy and the eventual coldness is strong but lacks a specific narrative antagonist.",
+      "timestamps": [
+        {
+          "start": "00:00.00",
+          "end": "00:09.80"
+        },
+        {
+          "start": "02:13.80",
+          "end": "02:18.00"
+        }
+      ],
+      "total_duration_seconds": 25,
+      "virality_score": 62,
+      "why_it_works": "The internal journey of a character is often less sticky than an external conflict."
+    },
+    {
+      "rank": 15,
+      "promo_id": "P13",
+      "title": "The Dark Hallway",
+      "episodes_used": [
+        27,
+        28
+      ],
+      "hook": "The heavy mahogany double doors burst open, revealing the Blond Nobleman and Lady Catherine storming into the bedchamber.",
+      "cliffhanger": "Extreme close-up of Juliana's wide, trembling eyes as the guard wrenches her backward into the dark hallway, cutting sharply to black.",
+      "relevance": "Fair - Simple Cohesion",
+      "pairing_analysis": "Starts with an intrusion and ends with an abduction; structurally sound but lacks a unique hook element.",
+      "timestamps": [
+        {
+          "start": "00:48.80",
+          "end": "00:51.50"
+        },
+        {
+          "start": "02:16.80",
+          "end": "02:18.50"
+        }
+      ],
+      "total_duration_seconds": 20,
+      "virality_score": 58,
+      "why_it_works": "Standard drama tropes are functional, but less competitive in a saturated market."
+    }
+  ]
+}

@@ -1,8 +1,9 @@
 import os
+import re
 import json
 import streamlit as st
 from typing import List, Dict, Any, Tuple
-from llm_provider import LiteLLMProvider, resolve_api_keys
+from llm_provider import LiteLLMProvider, resolve_api_keys, LOG_FILE, LLM_CHATS_FILE
 from promo_engine import (
     PromoEngine,
     load_data_files,
@@ -10,8 +11,16 @@ from promo_engine import (
     extract_episode_number,
     build_xml_tagged_corpus,
     EXTRACTED_PROMOS_FILE,
-    RANKED_PROMOS_FILE
+    RANKED_PROMOS_FILE,
+    XML_CORPUS_FILE
 )
+
+EXTRAS_DIR = os.path.join(os.path.dirname(__file__), "outputs", "extras")
+PROMPT_TEMPLATES_FILE = os.path.join(EXTRAS_DIR, "prompt_templates.md")
+TOUR_SCRIPT_FILE = os.path.join(EXTRAS_DIR, "presentation_tour_script.txt")
+MERMAID_FILE = os.path.join(EXTRAS_DIR, "architecture_flowchart.mmd")
+SOLUTION_DOC_MD = os.path.join(EXTRAS_DIR, "solution_doc.md")
+SOLUTION_DOC_TEX = os.path.join(EXTRAS_DIR, "solution_doc.tex")
 
 st.set_page_config(
     page_title="AI Microdrama Promo Extractor",
@@ -20,11 +29,11 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom Styling
+# Custom High-End Styling
 st.markdown("""
 <style>
     .main-header {
-        font-size: 2.2rem;
+        font-size: 2.3rem;
         font-weight: 800;
         background: linear-gradient(90deg, #FF4B4B 0%, #FF8A00 100%);
         -webkit-background-clip: text;
@@ -33,8 +42,15 @@ st.markdown("""
     }
     .sub-header {
         font-size: 1.05rem;
-        color: #999999;
+        color: #aaaaaa;
         margin-bottom: 1.5rem;
+    }
+    .metric-card {
+        background-color: #1a1c24;
+        border-radius: 8px;
+        padding: 14px 18px;
+        border: 1px solid #2d3139;
+        margin-bottom: 12px;
     }
     .promo-card {
         background: #1e222d;
@@ -66,13 +82,14 @@ st.markdown("""
     }
     .badge {
         display: inline-block;
-        padding: 3px 9px;
+        padding: 4px 10px;
         border-radius: 12px;
         font-size: 0.8rem;
         font-weight: bold;
         background: #2e3546;
         color: #eee;
         margin-right: 6px;
+        margin-bottom: 4px;
     }
     .badge-rank {
         background: #FF4B4B;
@@ -100,58 +117,158 @@ st.markdown("""
 # Sidebar Configuration
 with st.sidebar:
     st.image("https://img.icons8.com/fluency/96/clapperboard.png", width=64)
-    st.title("⚙️ Production Controls")
+    st.title("⚙️ Production Studio")
 
-    st.subheader("🤖 AI Model Engine")
-    model_choice = st.selectbox(
-        "Select Model (LiteLLM)",
-        [
-            "gemini-1.5-flash",
-            "gemini-flash-latest",
-            "gemini-3.1-flash-lite",
-            "gemini-2.0-flash",
-            "gpt-4o-mini",
-            "claude-3-5-sonnet",
-            "Custom"
-        ],
-        index=0,
-        help="Default model: gemini-1.5-flash (mapped to active high-speed Google AI Studio endpoint)"
-    )
+    st.markdown("""
+    [![Live Cloud App](https://img.shields.io/badge/Deployed-Streamlit%20Cloud-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://promo-extractor-hemant.streamlit.app/)
+    """, unsafe_allow_html=True)
+    st.caption("🌐 [promo-extractor-hemant.streamlit.app](https://promo-extractor-hemant.streamlit.app/)")
 
-    if model_choice == "Custom":
-        active_model = st.text_input("Custom Model Name", "gemini-1.5-flash")
-    else:
-        active_model = model_choice
+    st.markdown("""
+    <div style="background: rgba(255,255,255,0.04); padding: 8px 12px; border-radius: 6px; border: 1px solid #333; margin-top: 6px; margin-bottom: 12px;">
+        <div style="font-size: 0.8rem; color: #aaa; margin-bottom: 2px;">Developed by:</div>
+        <div style="font-weight: 700; color: #fff; font-size: 0.95rem; margin-bottom: 6px;">Hemant Bhakar</div>
+        <div style="display: flex; gap: 12px;">
+            <a href="https://github.com/bhakarboy01" target="_blank" style="text-decoration: none; color: #FF4B4B; font-size: 0.82rem; font-weight: 600;">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" width="14" style="vertical-align: middle; filter: invert(1); margin-right: 3px;"/> GitHub
+            </a>
+            <a href="https://www.linkedin.com/in/bhakar-hemant/" target="_blank" style="text-decoration: none; color: #0077B5; font-size: 0.82rem; font-weight: 600;">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-plain.svg" width="14" style="vertical-align: middle; margin-right: 3px;"/> LinkedIn
+            </a>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
-    env_key = os.environ.get("GEMINI_API_KEY", "")
-    api_key_input = st.text_input(
-        "API Key (Gemini/OpenAI)",
-        value=env_key,
+    st.subheader("⚙️ Evaluator API & Routing")
+    st.caption("Custom LLM routing and evaluator key injection for recruiters and engineers.")
+
+    default_env_keys = os.environ.get("GEMINI_API_KEY", "")
+
+    custom_api_keys = st.text_input(
+        "Inject Custom API Key(s) (Comma separated)",
+        value=default_env_keys,
         type="password",
-        help="Prefilled from environment or enter key manually"
+        placeholder="e.g. AIza..., sk-proj-..., sk-ant-...",
+        help="Evaluator API keys are masked with password bullets for privacy. Supports Google Gemini, OpenAI, or Anthropic keys."
     )
-    if api_key_input:
-        os.environ["GEMINI_API_KEY"] = api_key_input.strip()
-        os.environ["GOOGLE_API_KEY"] = api_key_input.strip()
+
+    routing_mode = st.radio(
+        "Routing Mode",
+        ["Optimized Default (Free Tier)", "Global Override", "Advanced Task Routing"],
+        index=0,
+        help="Configure how models are dispatched across extraction stages."
+    )
+
+    MODEL_DROPDOWN_OPTIONS = [
+        "gpt-4o",
+        "gpt-4o-mini",
+        "claude-3-5-sonnet-20240620",
+        "gemini/gemini-1.5-pro",
+        "gemini/gemini-1.5-flash",
+        "gemini/gemini-2.0-flash",
+        "Custom"
+    ]
+
+    selected_global_model = None
+    stage_2_model = None
+    stage_3_model = None
+    stage_4_model = None
+
+    if routing_mode == "Optimized Default (Free Tier)":
+        st.info("💡 **Optimized Free-Tier Stack**:\n"
+                "- **Stage 2 (Skim)**: `gemini-1.5-flash` (Cost-effective macro scanning)\n"
+                "- **Stage 3 (Editor)**: `gemini-1.5-pro` (Deep reasoning & timestamp precision)\n"
+                "- **Stage 4 (Ranker)**: `gemini-1.5-pro` (Cohesive marketing synergy ranking)\n\n"
+                "*Automatic failover to active Google AI Studio flash-lite endpoints if limits are reached.*")
+
+    elif routing_mode == "Global Override":
+        selected_model_choice = st.selectbox(
+            "Select Global Model Override",
+            MODEL_DROPDOWN_OPTIONS,
+            index=0,
+            help="This model will be used across all stages (with fallback to the free-tier stack if it fails)."
+        )
+        if selected_model_choice == "Custom":
+            selected_global_model = st.text_input("Enter Custom Model String (LiteLLM format)", "gpt-4o")
+        else:
+            selected_global_model = selected_model_choice
+
+    elif routing_mode == "Advanced Task Routing":
+        st.caption("Configure dedicated models per extraction stage:")
+        
+        # Stage 2: Skim
+        s2_choice = st.selectbox("Stage 2: Macro Director Skim", MODEL_DROPDOWN_OPTIONS, index=4, help="Default: gemini/gemini-1.5-flash")
+        stage_2_model = st.text_input("Custom Skim Model", "gemini/gemini-1.5-flash") if s2_choice == "Custom" else s2_choice
+
+        # Stage 3: Editor
+        s3_choice = st.selectbox("Stage 3: Precision Concept Editor", MODEL_DROPDOWN_OPTIONS, index=3, help="Default: gemini/gemini-1.5-pro")
+        stage_3_model = st.text_input("Custom Editor Model", "gemini/gemini-1.5-pro") if s3_choice == "Custom" else s3_choice
+
+        # Stage 4: Ranker
+        s4_choice = st.selectbox("Stage 4: Executive Cohesion Ranker", MODEL_DROPDOWN_OPTIONS, index=3, help="Default: gemini/gemini-1.5-pro")
+        stage_4_model = st.text_input("Custom Ranker Model", "gemini/gemini-1.5-pro") if s4_choice == "Custom" else s4_choice
+
+    apply_btn = st.button("💾 Apply Configuration", type="secondary", use_container_width=True)
+
+    # Parse entered keys
+    parsed_eval_keys = [k.strip().strip('"').strip("'") for k in re.split(r"[\r\n,;]+", custom_api_keys) if k.strip()]
+
+    # Initialize or update session state for routing
+    if "routing_config" not in st.session_state:
+        st.session_state["routing_config"] = {
+            "mode": "Optimized Default (Free Tier)",
+            "global_model": None,
+            "stage_routes": {},
+            "keys": parsed_eval_keys
+        }
+
+    if apply_btn:
+        st.session_state["routing_config"] = {
+            "mode": routing_mode,
+            "global_model": selected_global_model if routing_mode == "Global Override" else None,
+            "stage_routes": {
+                "Macro Narrative Director Skim": stage_2_model,
+                "Precision Concept Editor": stage_3_model,
+                "Executive Cohesion Ranker": stage_4_model
+            } if routing_mode == "Advanced Task Routing" else {},
+            "keys": parsed_eval_keys
+        }
+        st.success(f"✅ Configuration applied! ({len(parsed_eval_keys)} active key(s) in pool)")
+
+    active_cfg = st.session_state["routing_config"]
+    if active_cfg["keys"]:
+        st.caption(f"🛡️ **{len(active_cfg['keys'])} API Key(s)** active in failover pool.")
+    else:
+        st.warning("⚠️ No API keys configured.")
+
+    st.subheader("⏱️ Rate-Limit & Pacing Control")
+    pacing_delay = st.slider(
+        "Pacing Sleep Between Requests (Seconds)",
+        min_value=0.5,
+        max_value=6.0,
+        value=2.5,
+        step=0.5,
+        help="Adds a healthy sleep between requests to strictly prevent Gemini 15 RPM / 429 rate limit spikes."
+    )
 
     temperature = st.slider("Sampling Temperature", min_value=0.0, max_value=1.0, value=0.2, step=0.05)
 
     st.divider()
 
-    st.subheader("📂 Screenplay Input")
+    st.subheader("📂 Screenplay Source")
     source_type = st.radio(
-        "Ingestion Method",
+        "Ingestion Source",
         ["Use Existing Dataset (data/)", "Upload ZIP Archive (.zip)", "Upload Text Files (.txt)"],
         index=0
     )
 
-    st.caption("🎯 **Quota Standards:** 10–15 Concepts ➔ Minimum 8–10 Valid Promos (Strictly 20–60s).")
+    st.caption("🎯 **Quota Standards:** 15 Concepts ➔ Minimum 8–10 Valid Promos (Strictly 20–60s).")
 
 # Main Title & Subtitle
 st.markdown('<div class="main-header">AI Microdrama Promo Extractor</div>', unsafe_allow_html=True)
 st.markdown('<div class="sub-header">Concept-Driven Pipeline: Macro Narrative Analysis ➔ Precision Timestamp Editing ➔ Cohesion & Virality Ranking</div>', unsafe_allow_html=True)
 
-# Load Episodes based on selection
+# Ingestion Flow
 loaded_episodes: List[Tuple[int, str, str]] = []
 
 if source_type == "Use Existing Dataset (data/)":
@@ -210,20 +327,42 @@ col_btn, col_stats = st.columns([1, 3])
 with col_btn:
     run_button = st.button("🚀 Run Extraction Pipeline", type="primary", use_container_width=True)
 
-# Engine Initialization
+# Engine Initialization with Evaluator Dynamic Routing
+active_cfg = st.session_state.get("routing_config", {
+    "mode": "Optimized Default (Free Tier)",
+    "global_model": None,
+    "stage_routes": {},
+    "keys": parsed_eval_keys
+})
+
+active_keys = active_cfg.get("keys") or parsed_eval_keys
+
 llm_provider = LiteLLMProvider(
-    model=active_model,
-    api_key=api_key_input if api_key_input else None,
-    temperature=temperature
+    api_key=active_keys if active_keys else None,
+    temperature=temperature,
+    pacing_delay=pacing_delay
 )
-engine = PromoEngine(llm_provider=llm_provider)
+
+# Apply routing methods based on evaluator selection
+if active_cfg.get("mode") == "Global Override" and active_cfg.get("global_model"):
+    llm_provider.set_global_override(active_cfg["global_model"])
+elif active_cfg.get("mode") == "Advanced Task Routing" and active_cfg.get("stage_routes"):
+    for stg, mdl in active_cfg["stage_routes"].items():
+        llm_provider.set_custom_route(stg, mdl)
+else:
+    llm_provider.set_global_override(None)  # Enforce default optimized free-tier stack
+
+engine = PromoEngine(
+    llm_provider=llm_provider,
+    pacing_delay=pacing_delay
+)
 
 # Pipeline Execution
 if run_button:
     if not selected_episodes:
         st.error("Please provide screenplay episodes to process.")
-    elif not (api_key_input or os.environ.get("GEMINI_API_KEY")):
-        st.error("Please provide a Gemini API Key in the sidebar or in `.env`.")
+    elif not active_keys:
+        st.error("Please provide at least one API Key in the sidebar or in `.env`.")
     else:
         progress_bar = st.progress(0.0)
         status_box = st.empty()
@@ -246,15 +385,15 @@ if run_button:
             st.session_state["xml_corpus"] = pipeline_result["xml_corpus"]
 
             status_box.success(
-                f"🎉 Pipeline Complete! Generated {len(pipeline_result['promo_concepts'])} viral concepts, "
+                f"🎉 Pipeline Complete! Discovered {len(pipeline_result['promo_concepts'])} viral concepts, "
                 f"successfully extracted {len(pipeline_result['extracted_promos'])} promos under 60s, "
-                f"and generated ranked deliverables."
+                f"and ranked all {len(pipeline_result['ranking_result'].get('top_promos', []))} promos in outputs/ folder."
             )
         except Exception as e:
             status_box.error(f"❌ Error during processing: {str(e)}")
             st.exception(e)
 
-# Load existing deliverables if present on disk
+# Load existing deliverables from outputs/ folder if present
 if os.path.exists(EXTRACTED_PROMOS_FILE) and "extracted_promos" not in st.session_state:
     try:
         with open(EXTRACTED_PROMOS_FILE, "r", encoding="utf-8") as f:
@@ -270,24 +409,31 @@ if os.path.exists(RANKED_PROMOS_FILE) and "ranking_result" not in st.session_sta
         pass
 
 # Render Tabs with clean professional headings
-tab_ranked, tab_concepts, tab_raw, tab_xml = st.tabs([
+tab_ranked, tab_concepts, tab_deliverables, tab_xml, tab_logs = st.tabs([
     "🏆 Top Ranked Viral Promos",
     "💡 Clip Concepts & Editorial Status",
     "📜 Master Deliverables (JSON Exports)",
-    "📑 Screenplay Corpus Inspector"
+    "📑 Screenplay Corpus Inspector",
+    "📋 Live Pipeline Run Logs"
 ])
 
-# TAB 1: TOP RANKED VIRAL PROMOS
+# TAB 1: TOP RANKED VIRAL PROMOS (SHOW TOP 7 AS REQUESTED)
 with tab_ranked:
     st.subheader("🏆 Top Ranked Viral Promotional Clips")
     st.markdown("Evaluated as a **single cohesive unit**, prioritizing the psychological pairing between the opening hook and closing cliffhanger.")
-    
+
     ranking_data = st.session_state.get("ranking_result")
     if ranking_data and "top_promos" in ranking_data and ranking_data["top_promos"]:
+        all_ranked_promos = ranking_data["top_promos"]
+        top_7_promos = all_ranked_promos[:7]
+        remaining_promos = all_ranked_promos[7:]
+
         if "ranking_summary" in ranking_data and ranking_data["ranking_summary"]:
             st.info(f"💡 **Executive Producer Strategy:** {ranking_data['ranking_summary']}")
 
-        for item in ranking_data["top_promos"]:
+        st.markdown(f"#### 🌟 Featured Selection: Top 7 Ranked Cuts (of {len(all_ranked_promos)} Total Ranked)")
+
+        def render_promo_card(item: Dict[str, Any]):
             rank = item.get("rank", 1)
             score = item.get("virality_score", 92)
             dur = item.get("total_duration_seconds", 45)
@@ -303,34 +449,37 @@ with tab_ranked:
             is_distant = len(eps) > 1 and max(eps) - min(eps) > 3
 
             with st.container():
-                st.markdown(f"""
-                <div class="promo-card">
-                    <span class="badge badge-rank">Rank #{rank}</span>
-                    <span class="badge badge-score">Virality Score: {score}/100</span>
-                    <span class="badge badge-relevance">🎯 {relevance}</span>
-                    <span class="badge badge-dur">⏱️ {dur}s (Strictly 20-60s)</span>
-                    <span class="badge">Episodes: {', '.join(str(e) for e in eps)}</span>
-                    {'<span class="badge badge-distant">⚡ Cross-Episode Spliced</span>' if is_distant else ''}
-                    <h3 style="margin-top:10px; margin-bottom: 5px;">{title}</h3>
-                </div>
-                """, unsafe_allow_html=True)
+                badges_html = (
+                    f'<div class="promo-card">'
+                    f'<span class="badge badge-rank">Rank #{rank}</span>'
+                    f'<span class="badge badge-score">Virality Score: {score}/100</span>'
+                    f'<span class="badge badge-relevance">🎯 {relevance}</span>'
+                    f'<span class="badge badge-dur">⏱️ {dur}s (Strictly 20-60s)</span>'
+                    f'<span class="badge">Episodes: {", ".join(str(e) for e in eps)}</span>'
+                    f'{"<span class=\"badge badge-distant\">⚡ Cross-Episode Spliced</span>" if is_distant else ""}'
+                    f'<div style="font-size: 1.45rem; font-weight: 700; color: #FFFFFF; margin-top: 10px; margin-bottom: 4px; letter-spacing: -0.01em;">{title}</div>'
+                    f'</div>'
+                )
+                st.markdown(badges_html, unsafe_allow_html=True)
 
                 col_a, col_b = st.columns([3, 2])
                 with col_a:
-                    st.markdown(f"""
-                    <div class="hook-box">
-                        <strong>🎣 The Hook (0-5s):</strong><br/>{hook}
-                    </div>
-                    <div class="cliff-box">
-                        <strong>⚡ The Cliffhanger:</strong><br/>{cliff}
-                    </div>
-                    """, unsafe_allow_html=True)
+                    boxes_html = (
+                        f'<div class="hook-box">'
+                        f'<strong>🎣 The Hook (0-5s):</strong><br/>{hook}'
+                        f'</div>'
+                        f'<div class="cliff-box">'
+                        f'<strong>⚡ The Cliffhanger:</strong><br/>{cliff}'
+                        f'</div>'
+                    )
+                    st.markdown(boxes_html, unsafe_allow_html=True)
                     if pairing:
-                        st.markdown(f"""
-                        <div class="pairing-box">
-                            <strong>🔗 Hook & Cliffhanger Pairing Synergy:</strong><br/>{pairing}
-                        </div>
-                        """, unsafe_allow_html=True)
+                        pairing_html = (
+                            f'<div class="pairing-box">'
+                            f'<strong>🔗 Hook & Cliffhanger Pairing Synergy:</strong><br/>{pairing}'
+                            f'</div>'
+                        )
+                        st.markdown(pairing_html, unsafe_allow_html=True)
                     if why:
                         st.caption(f"🎯 **Why this works:** {why}")
 
@@ -346,13 +495,24 @@ with tab_ranked:
                     st.dataframe(ts_rows, use_container_width=True, hide_index=True)
 
                 st.divider()
+
+        # Render Top 7
+        for item in top_7_promos:
+            render_promo_card(item)
+
+        # Remaining Ranks (8 to 15) in clean expandable container
+        if remaining_promos:
+            with st.expander(f"🔽 View Remaining Ranked Promos (Ranks 8 to {len(all_ranked_promos)})"):
+                st.caption(f"All {len(all_ranked_promos)} candidate promos have been fully ranked and saved to `outputs/ranked_promos.json`.")
+                for item in remaining_promos:
+                    render_promo_card(item)
     else:
         st.info("No ranked promos generated yet. Click **'Run Extraction Pipeline'** to execute.")
 
 # TAB 2: CLIP CONCEPTS & EDITORIAL STATUS
 with tab_concepts:
     st.subheader("💡 Viral Clip Concepts & Editorial Status")
-    st.markdown("Concepts identified during macro narrative analysis and edited with targeted episode scripts.")
+    st.markdown("Macro narrative concepts discovered across the series and edited with targeted episode scripts.")
 
     concepts = st.session_state.get("promo_concepts", [])
     extracted_map = {p["promo_id"]: p for p in st.session_state.get("extracted_promos", [])}
@@ -384,20 +544,20 @@ with tab_concepts:
         st.info("No concepts generated yet.")
 
 # TAB 3: MASTER DELIVERABLES (JSON EXPORTS)
-with tab_raw:
-    st.subheader("📜 Master Deliverables (JSON Exports)")
-    st.markdown("Download and inspect the separate deliverables generated by the pipeline.")
+with tab_deliverables:
+    st.subheader("📜 Master Deliverables (JSON Exports in `outputs/`)")
+    st.markdown("Download and inspect the separate deliverable files stored in the `outputs/` folder.")
 
     col_deliv1, col_deliv2 = st.columns(2)
 
     with col_deliv1:
-        st.markdown("### 1. `ranked_promos.json`")
-        st.caption("Top 5 ranked promotional clips evaluated as cohesive units with ranks, relevance, and pairing analysis.")
+        st.markdown("### 1. `outputs/ranked_promos.json`")
+        st.caption("All 15 candidate promotional clips evaluated and ranked as cohesive units with ranks and relevance.")
         if os.path.exists(RANKED_PROMOS_FILE):
             with open(RANKED_PROMOS_FILE, "r", encoding="utf-8") as f:
                 ranked_json_str = f.read()
             st.download_button(
-                label="📥 Download ranked_promos.json",
+                label="📥 Download ranked_promos.json (All 15 Ranked)",
                 data=ranked_json_str,
                 file_name="ranked_promos.json",
                 mime="application/json",
@@ -409,10 +569,10 @@ with tab_raw:
             except Exception:
                 st.text(ranked_json_str)
         else:
-            st.info("`ranked_promos.json` will be generated after running the pipeline.")
+            st.info("`outputs/ranked_promos.json` will be generated after running the pipeline.")
 
     with col_deliv2:
-        st.markdown("### 2. `extracted_promos.json`")
+        st.markdown("### 2. `outputs/extracted_promos.json`")
         st.caption("Complete pool of candidate promotional clips extracted under the 20-60s duration constraint.")
         if os.path.exists(EXTRACTED_PROMOS_FILE):
             with open(EXTRACTED_PROMOS_FILE, "r", encoding="utf-8") as f:
@@ -430,7 +590,133 @@ with tab_raw:
             except Exception:
                 st.text(extracted_json_str)
         else:
-            st.info("`extracted_promos.json` will be generated after running the pipeline.")
+            st.info("`outputs/extracted_promos.json` will be generated after running the pipeline.")
+
+    st.divider()
+    st.subheader("📁 Supplemental Deliverables (`outputs/extras/`)")
+
+    col_ex1, col_ex2 = st.columns(2)
+
+    with col_ex1:
+        st.markdown("### 3. `outputs/extras/llm_chats.json`")
+        st.caption("Complete, single master log of ALL requests (prompts sent) and corresponding outputs received from the LLMs across all stages.")
+        if os.path.exists(LLM_CHATS_FILE):
+            with open(LLM_CHATS_FILE, "r", encoding="utf-8") as f:
+                chats_json_str = f.read()
+            try:
+                chats_data = json.loads(chats_json_str)
+                chat_count = chats_data.get("total_recorded_requests", len(chats_data.get("interactions", [])))
+            except Exception:
+                chat_count = "All"
+            st.download_button(
+                label=f"📥 Download llm_chats.json ({chat_count} Recorded Chats)",
+                data=chats_json_str,
+                file_name="llm_chats.json",
+                mime="application/json",
+                type="primary",
+                use_container_width=True
+            )
+            with st.expander(f"🔍 Inspect Master LLM Chats File ({chat_count} Interactions)"):
+                try:
+                    st.json(json.loads(chats_json_str))
+                except Exception:
+                    st.text(chats_json_str)
+        else:
+            st.info("`outputs/extras/llm_chats.json` will be generated after running the pipeline.")
+
+        st.markdown("### 4. `outputs/extras/prompt_templates.md`")
+        st.caption("Comprehensive catalog of all system and user prompt templates with strategic rationale and JSON schemas.")
+        if os.path.exists(PROMPT_TEMPLATES_FILE):
+            with open(PROMPT_TEMPLATES_FILE, "r", encoding="utf-8") as f:
+                pt_str = f.read()
+            st.download_button(
+                label="📥 Download prompt_templates.md",
+                data=pt_str,
+                file_name="prompt_templates.md",
+                mime="text/markdown",
+                use_container_width=True
+            )
+            with st.expander("🔍 View Prompt Templates Catalog"):
+                st.markdown(pt_str)
+
+    with col_ex2:
+        st.markdown("### 5. `outputs/extras/series_screenplay_corpus.xml`")
+        st.caption("Unified XML screenplay corpus containing all 50 episodes with episode tagging for macro narrative skimming.")
+        if os.path.exists(XML_CORPUS_FILE):
+            with open(XML_CORPUS_FILE, "r", encoding="utf-8") as f:
+                xml_corpus_data = f.read()
+            st.download_button(
+                label=f"📥 Download series_screenplay_corpus.xml ({len(xml_corpus_data):,} chars)",
+                data=xml_corpus_data,
+                file_name="series_screenplay_corpus.xml",
+                mime="application/xml",
+                use_container_width=True
+            )
+        else:
+            st.info("`outputs/extras/series_screenplay_corpus.xml` will be saved during ingestion.")
+
+        st.markdown("### 6. `outputs/extras/presentation_tour_script.txt`")
+        st.caption("Concise 2.5-minute spoken presentation script with explicit cues for switching between the architecture diagram and web app.")
+        if os.path.exists(TOUR_SCRIPT_FILE):
+            with open(TOUR_SCRIPT_FILE, "r", encoding="utf-8") as f:
+                tour_script_text = f.read()
+            st.download_button(
+                label="📥 Download presentation_tour_script.txt",
+                data=tour_script_text,
+                file_name="presentation_tour_script.txt",
+                mime="text/plain",
+                use_container_width=True
+            )
+            with st.expander("🔍 Read 2.5-Minute Tour Script"):
+                st.text(tour_script_text)
+
+        st.markdown("### 7. `outputs/extras/architecture_flowchart.mmd`")
+        st.caption("Mermaid flowchart script depicting data ingestion, LLM call sequence, and Map-Reduce promo synthesis.")
+        if os.path.exists(MERMAID_FILE):
+            with open(MERMAID_FILE, "r", encoding="utf-8") as f:
+                mermaid_text = f.read()
+            st.download_button(
+                label="📥 Download architecture_flowchart.mmd",
+                data=mermaid_text,
+                file_name="architecture_flowchart.mmd",
+                mime="text/plain",
+                use_container_width=True
+            )
+
+    st.divider()
+    st.subheader("📑 Formal Engineering Solution Documents (`docs/` & `outputs/extras/`)")
+    col_sol1, col_sol2 = st.columns(2)
+    with col_sol1:
+        st.markdown("### 8. `outputs/extras/solution_doc.md`")
+        st.caption("2-page engineering solution document covering problem framing, failed approach post-mortem, Map-Reduce pipeline, limitations, and scaling.")
+        if os.path.exists(SOLUTION_DOC_MD):
+            with open(SOLUTION_DOC_MD, "r", encoding="utf-8") as f:
+                sol_md_text = f.read()
+            st.download_button(
+                label="📥 Download solution_doc.md",
+                data=sol_md_text,
+                file_name="solution_doc.md",
+                mime="text/markdown",
+                use_container_width=True
+            )
+            with st.expander("🔍 Read Solution Document (Markdown)"):
+                st.markdown(sol_md_text)
+
+    with col_sol2:
+        st.markdown("### 9. `outputs/extras/solution_doc.tex` (Overleaf Ready)")
+        st.caption("Publication-grade, Overleaf-ready LaTeX script strictly budgeted for a 2-page concise PDF submission.")
+        if os.path.exists(SOLUTION_DOC_TEX):
+            with open(SOLUTION_DOC_TEX, "r", encoding="utf-8") as f:
+                sol_tex_text = f.read()
+            st.download_button(
+                label="📥 Download solution_doc.tex",
+                data=sol_tex_text,
+                file_name="solution_doc.tex",
+                mime="text/x-tex",
+                use_container_width=True
+            )
+            with st.expander("🔍 View Overleaf LaTeX Source"):
+                st.code(sol_tex_text, language="latex")
 
 # TAB 4: XML SCREENPLAY CORPUS INSPECTOR
 with tab_xml:
@@ -442,7 +728,57 @@ with tab_xml:
         corpus_text = build_xml_tagged_corpus(selected_episodes)
 
     if corpus_text:
-        st.caption(f"Corpus Length: {len(corpus_text):,} characters (~{len(corpus_text)//4:,} tokens)")
+        col_xml_head, col_xml_dl = st.columns([2, 1])
+        with col_xml_head:
+            st.caption(f"Corpus Length: {len(corpus_text):,} characters (~{len(corpus_text)//4:,} tokens) | Saved to `outputs/extras/series_screenplay_corpus.xml`")
+        with col_xml_dl:
+            st.download_button(
+                label="📥 Download Full XML Corpus",
+                data=corpus_text,
+                file_name="series_screenplay_corpus.xml",
+                mime="application/xml",
+                use_container_width=True
+            )
         st.text_area("XML Corpus Preview", value=corpus_text[:12000] + ("\n\n... [truncated for preview] ..." if len(corpus_text) > 12000 else ""), height=450)
     else:
         st.info("No XML corpus available yet.")
+
+# TAB 5: LIVE PIPELINE RUN LOGS
+with tab_logs:
+    st.subheader("📋 Pipeline Execution & Failover Logs (`outputs/pipeline_run.log`)")
+    st.markdown("Live execution audit trail tracking key rotation, pacing delays, 429/503 error recovery, and LLM latency.")
+
+    if os.path.exists(LOG_FILE):
+        with open(LOG_FILE, "r", encoding="utf-8") as f:
+            log_content = f.read()
+        col_log_dl, col_log_info = st.columns([1, 3])
+        with col_log_dl:
+            st.download_button(
+                label="📥 Download pipeline_run.log",
+                data=log_content,
+                file_name="pipeline_run.log",
+                mime="text/plain",
+                use_container_width=True
+            )
+        with col_log_info:
+            st.caption(f"Log Size: {len(log_content):,} bytes")
+        st.text_area("Live Log Output", value=log_content, height=450)
+    else:
+        st.info("`outputs/pipeline_run.log` will be populated during pipeline execution.")
+
+# Page Footer
+st.markdown("""
+<div style="text-align: center; padding: 25px 0 10px 0; border-top: 1px solid #2d3139; margin-top: 40px; color: #888;">
+    <span style="font-weight: 600; color: #eee; font-size: 0.95rem;">AI Microdrama Promo Extractor</span> 
+    <span style="color: #666; margin: 0 8px;">•</span> 
+    Built by <strong style="color: #fff;">Hemant Bhakar</strong>
+    <div style="margin-top: 8px;">
+        <a href="https://github.com/bhakarboy01" target="_blank" style="margin-right: 18px; text-decoration: none; color: #FF4B4B; font-weight: 500; font-size: 0.9rem;">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" width="16" style="vertical-align: middle; filter: invert(1); margin-right: 4px;"/> GitHub (@bhakarboy01)
+        </a>
+        <a href="https://www.linkedin.com/in/bhakar-hemant/" target="_blank" style="text-decoration: none; color: #0077B5; font-weight: 500; font-size: 0.9rem;">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-plain.svg" width="16" style="vertical-align: middle; margin-right: 4px;"/> LinkedIn (bhakar-hemant)
+        </a>
+    </div>
+</div>
+""", unsafe_allow_html=True)

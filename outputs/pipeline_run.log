@@ -1,0 +1,66 @@
+2026-11-07 18:50:24 [INFO] [Key Pool] Initialized with 1 API key(s).
+2026-11-07 18:50:37 [INFO] [LLM Success] Model gemini/gemini-3.1-flash-lite returned valid JSON in 10.72s.
+2026-11-07 18:50:37 [INFO] [Deliverable] Saved all 15 ranked promos to C:\Users\heman\tech stuff\projects\Kuku Project\PromoExtractor\outputs\ranked_promos.json
+2026-11-07 18:53:05 [INFO] [Key Pool] Initialized with 1 API key(s).
+2026-11-07 18:56:48 [INFO] [Key Pool] Initialized with 1 API key(s).
+2026-11-07 18:57:18 [INFO] [Key Pool] Initialized with 1 API key(s).
+2026-11-07 18:57:19 [INFO] [Key Pool] Initialized with 1 API key(s).
+2026-11-07 18:57:20 [INFO] [Key Pool] Initialized with 1 API key(s).
+2026-11-07 19:06:21 [INFO] [Key Pool] Initialized with 1 API key(s).
+2026-11-07 19:06:46 [INFO] [Key Pool] Initialized with 2 API key(s).
+2026-11-07 19:07:31 [INFO] [Key Pool] Initialized with 3 API key(s).
+2026-11-07 21:38:06 [INFO] [Key Pool] Initialized with 1 API key(s).
+2026-11-07 21:49:13 [INFO] [Key Pool] Initialized with 1 API key(s).
+2026-11-07 21:49:27 [INFO] [Key Pool] Initialized with 1 API key(s).
+2026-11-07 21:50:33 [INFO] [Key Pool] Initialized with 1 API key(s).
+2026-11-07 21:53:50 [INFO] [Key Pool] Initialized with 1 API key(s).
+2026-11-07 21:53:52 [INFO] [Key Pool] Initialized with 1 API key(s).
+2026-11-08 12:53:39 [INFO] [Key Pool] Initialized with 2 API key(s).
+2026-11-08 12:53:39 [INFO] [Model Routing] Set custom route for 'Precision Concept Editor' -> gpt-4o
+2026-11-08 12:53:39 [INFO] [Model Routing] Set global model override across all stages -> claude-3-5-sonnet-20240620
+2026-11-08 12:53:39 [INFO] [Model Routing] Cleared all global overrides. Reverting to default routing.
+2026-11-08 12:55:37 [INFO] [Key Pool] Initialized with 2 API key(s).
+2026-11-08 12:55:37 [INFO] [Model Routing] Set custom route for 'Precision Concept Editor' -> gpt-4o
+2026-11-08 12:55:37 [INFO] [Model Routing] Cleared custom override for stage: 'Precision Concept Editor'
+2026-11-08 12:55:37 [INFO] [Model Routing] Set global model override across all stages -> claude-3-5-sonnet-20240620
+2026-11-08 12:55:37 [INFO] [Model Routing] Cleared all global overrides. Reverting to default routing.
+2026-11-08 12:56:09 [INFO] [Key Pool] Initialized with 2 API key(s).
+2026-11-08 12:56:09 [INFO] [Model Routing] Set custom route for 'Precision Concept Editor' -> gpt-4o
+2026-11-08 12:56:09 [INFO] [Model Routing] Cleared custom override for stage: 'Precision Concept Editor'
+2026-11-08 12:56:09 [INFO] [Model Routing] Set global model override across all stages -> claude-3-5-sonnet-20240620
+2026-11-08 12:56:09 [INFO] [Model Routing] Cleared all global overrides. Reverting to default routing.
+2026-11-08 13:02:20 [INFO] [Key Pool] Initialized with 2 API key(s).
+2026-11-08 13:02:20 [INFO] [Model Routing] Cleared all global overrides. Reverting to default routing.
+2026-11-08 13:04:46 [INFO] [Key Pool] Initialized with 2 API key(s).
+2026-11-08 13:04:46 [INFO] [Model Routing] Cleared all global overrides. Reverting to default routing.
+2026-11-08 13:04:53 [INFO] [Key Pool] Initialized with 2 API key(s).
+2026-11-08 13:04:53 [INFO] [Model Routing] Cleared all global overrides. Reverting to default routing.
+2026-11-08 13:07:29 [INFO] [Key Pool] Initialized with 2 API key(s).
+2026-11-08 13:07:29 [INFO] [Model Routing] Cleared all global overrides. Reverting to default routing.
+2026-11-08 13:19:50 [INFO] [Key Pool] Initialized with 2 API key(s).
+2026-11-08 13:19:50 [INFO] [Model Routing] Set custom route for 'Precision Concept Editor' -> gpt-4o
+2026-11-08 13:19:50 [INFO] [Model Routing] Cleared custom override for stage: 'Precision Concept Editor'
+2026-11-08 13:19:50 [INFO] [Model Routing] Set global model override across all stages -> claude-3-5-sonnet-20240620
+2026-11-08 13:19:50 [INFO] [Model Routing] Cleared all global overrides. Reverting to default routing.
+2026-11-08 13:24:36 [INFO] [Key Pool] Initialized with 2 API key(s).
+2026-11-08 13:24:36 [INFO] [Model Routing] Cleared all global overrides. Reverting to default routing.
+2026-11-08 13:24:49 [INFO] [Key Pool] Initialized with 2 API key(s).
+2026-11-08 13:24:49 [INFO] [Model Routing] Cleared all global overrides. Reverting to default routing.
+2026-11-08 13:25:22 [INFO] [Key Pool] Initialized with 2 API key(s).
+2026-11-08 13:25:22 [INFO] [Model Routing] Cleared all global overrides. Reverting to default routing.
+2026-11-08 13:25:24 [INFO] [Key Pool] Initialized with 2 API key(s).
+2026-11-08 13:25:24 [INFO] [Model Routing] Cleared all global overrides. Reverting to default routing.
+2026-11-08 13:25:49 [INFO] [Key Pool] Initialized with 2 API key(s).
+2026-11-08 13:25:49 [INFO] [Model Routing] Cleared all global overrides. Reverting to default routing.
+2026-11-08 14:47:41 [INFO] [Key Pool] Initialized with 2 API key(s).
+2026-11-08 14:47:41 [INFO] [Model Routing] Set custom route for 'Precision Concept Editor' -> gpt-4o
+2026-11-08 14:47:41 [INFO] [Model Routing] Cleared custom override for stage: 'Precision Concept Editor'
+2026-11-08 14:47:41 [INFO] [Model Routing] Set global model override across all stages -> claude-3-5-sonnet-20240620
+2026-11-08 14:47:41 [INFO] [Model Routing] Cleared all global overrides. Reverting to default routing.
+2026-11-08 14:50:36 [INFO] [Key Pool] Initialized with 2 API key(s).
+2026-11-08 14:50:36 [INFO] [Model Routing] Set custom route for 'Precision Concept Editor' -> gpt-4o
+2026-11-08 14:50:36 [INFO] [Model Routing] Cleared custom override for stage: 'Precision Concept Editor'
+2026-11-08 14:50:36 [INFO] [Model Routing] Set global model override across all stages -> claude-3-5-sonnet-20240620
+2026-11-08 14:50:36 [INFO] [Model Routing] Cleared all global overrides. Reverting to default routing.
+2026-11-08 14:50:46 [INFO] [Key Pool] Initialized with 2 API key(s).
+2026-11-08 14:50:46 [INFO] [Model Routing] Cleared all global overrides. Reverting to default routing.
